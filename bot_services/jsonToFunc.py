@@ -27,6 +27,8 @@ from bot_services.authentication_service import AuthenticationService
 from bot_services.event_service import EventService
 from bot_services.mcgill_event_service import McgillEventService
 from bot_services.communication_service import CommunicationService
+from bot_services.macbus_service import MacBusService
+from bot_services.examdate_service import ExamDateService
 
 QUESTION_CHANGE_STATUS = 'CHANGE_STATUS'
 QUESTION_USER_TYPE = 'USER_TYPE'
@@ -164,9 +166,15 @@ def sonToFunc(inSon, message):
         return ["listCommands"]
         # return listCommands()
 
-    elif apiAction == "mac":
-        return ["macBus"]
-        # return macBus()
+    elif apiAction == "bus_time":
+        user_id = (message['sender']['id'])
+        fbuser = UserService.getUser(user_id)
+        return MacBusService.giveNextBus(fbuser)
+
+    elif apiAction == "exam_date":
+        user_id = (message['sender']['id'])
+        fbuser = UserService.getUser(user_id)
+        return ExamDateService.giveExamDates(fbuser)
 
     elif apiAction == "broadcast":
         if "class" not in parameters.keys():
