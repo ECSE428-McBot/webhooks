@@ -32,6 +32,8 @@ QUESTION_CHANGE_STATUS = 'CHANGE_STATUS'
 QUESTION_USER_TYPE = 'USER_TYPE'
 QUESTION_AUTHENTICATE = 'AUTHENTICATE'
 QUESTION_NOTHING = 'NOTHING'
+QUESTION_EVENT_TYPE = 'EVENT_TYPES'
+QUESTION_ADD_LINK = 'ADD_EVENT_TYPE'
 
 def sonToFunc(inSon, message):
     if inSon == {}:
@@ -98,7 +100,32 @@ def sonToFunc(inSon, message):
         if (ssociety is None):
             return "Sorry you can't post event because you are not student society"
         reply = EventService.initEvent(conversation, parameters['url'])
+        conversation.set_conversation_question(Question.get_question_type(QUESTION_EVENT_TYPE))
         return reply
+
+    elif apiAction == "add_event_type":
+        if "url" not in parameters.keys():
+            return "what's the event?"
+        if "type" not in parameters.keys():
+            return "I cannot resolve the types"
+        user_id = (message['sender']['id'])
+        fbuser = UserService.getUser(user_id)
+        conversation = UserService.get_conversation(fbuser)
+        ssociety = UserService.get_student_society(fbuser)
+        if (ssociety is None):
+            return "Sorry you can't do that because you are not student society"
+        #get event
+        try:
+            event = EventService.get_event_from_link(parameters['url'])
+        except Exception as e:
+            return str(e)
+        #parse types
+        try:
+            event_types = EventService.parse_event_types(parameters['type'])
+        except Exception as e:
+            return str(e)
+        EventService.add_types_to_event(event_types, event)
+        return "the types are added to the event"
 
     # If user enters "change" we start the "change my user type" conversation
     elif apiAction == "changeStatus":

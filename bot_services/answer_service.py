@@ -10,6 +10,7 @@ QUESTION_USER_TYPE = 'USER_TYPE'
 QUESTION_AUTHENTICATE = 'AUTHENTICATE'
 QUESTION_NOTHING = 'NOTHING'
 QUESTION_CHANGE_STATUS = 'CHANGE_STATUS'
+QUESTION_EVENT_TYPE = 'EVENT_TYPES'
 
 #NLP STUFF
 import os.path
@@ -94,6 +95,19 @@ class AnswerService:
             if(fbuser.authentication_status == AuthenticationService.AUTHENTICATION_DONE):
                 conversation.set_conversation_question(Question.get_question_type(QUESTION_NOTHING))
             return reply
+
+        # If it's about event type
+        elif(conversation.question == Question.get_question_type(QUESTION_EVENT_TYPE)):
+            conversation.set_conversation_question(Question.get_question_type(QUESTION_NOTHING))
+            if ('n/a' in msg):
+                return "no type added"
+            event = EventService.get_most_recent_event(conversation)
+            try:
+                event_types = EventService.parse_event_types(msg)
+            except Exception as e:
+                return str(e)
+            EventService.add_types_to_event(event_types, event)
+            return "the types are added to the event"
 
         # If the question is empty, the msg must be a question.
         elif(conversation.question == Question.get_question_type(QUESTION_NOTHING)):

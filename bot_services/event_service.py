@@ -6,7 +6,7 @@ from bot_services.user_service import UserService, Question
 from bot_services.communication_service import CommunicationService
 from datetime import datetime
 from dateutil.parser import parse
-from fb_mcbot.models import Event
+from fb_mcbot.models import Event, EventType
 
 QUESTION_EVENT_NAME = 'EVENT_NAME'
 QUESTION_EVENT_LOCATION = 'EVENT_LOCATION'
@@ -25,6 +25,26 @@ class EventService:
         if not m:
             raise Exception(link + 'is not a valid link')
         return m.group(0)
+
+    def parse_event_types(msg):
+        event_types = msg.split(' ')
+        for t in event_types:
+            try:
+                EventType.objects.get(name=t)
+            except EventType.DoesNotExist:
+                raise Exception('\'' + t + '\'' + ' is not a valid event type')
+        return event_types
+
+    def get_event_from_link(link):
+        try:
+            eventId = EventService.get_event_id_from_link(link)
+        except Exception as e:
+            raise
+        try:
+            event = Event.objects.get(id=eventId)
+        except Event.DoesNotExist:
+            raise Exception('event does not exist')
+        return event
 
     def create_new_event(conversation, link):
         ssociety = UserService.get_student_society(conversation.fbuser)
@@ -45,6 +65,10 @@ class EventService:
         new_event.category = event_info['category']
         new_event.save()
 
+    def add_types_to_event(event_types, event):
+        for t in event_types:
+            event.types.add(EventType.objects.get(name=t))
+
     def get_most_recent_event(conversation):
         ssociety = UserService.get_student_society(conversation.fbuser)
         # recent_event = Event.objects.filter(creator = ssociety).order_by('creation_time')[0]
@@ -54,7 +78,7 @@ class EventService:
     def initEvent(conversation, link):
         try:
             EventService.create_new_event(conversation, link)
-            return "Event created"
+            return "Event created, please add some types to the event, for example 'sale food'. type 'n/a' to skip"
         except Exception as e:
             return "Error occured while creating the event. Event might already exists"
 

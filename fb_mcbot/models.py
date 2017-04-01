@@ -95,6 +95,11 @@ class Conversation(models.Model):
         self.question = question
         self.save()
 
+class EventType(models.Model):
+    name = models.CharField(max_length=50, primary_key=True)
+    def __str__(self):
+        return ("%s" % (self.name))
+
 class Event(models.Model):
     id = models.SlugField(max_length=25, primary_key=True)
     name = models.CharField(max_length=70, null=True)
@@ -103,6 +108,8 @@ class Event(models.Model):
     creator = models.ForeignKey(StudentSociety, on_delete=models.CASCADE)
     creation_time = models.DateTimeField(auto_now_add=True)
     event_time = models.DateTimeField(null=True)
+
+    types = models.ManyToManyField(EventType)
 
     def __str__(self):
         return ("%s" % (self.name))
