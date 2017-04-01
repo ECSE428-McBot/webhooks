@@ -31,7 +31,14 @@ class UserService:
             return None
         return users
 
-    def create_new_user(user_info, user_id):
+    def getStudentsInCourse(courseName):
+        try:
+            course = Course.objects.get(name=courseName)
+        except Course.DoesNotExist:
+            raise
+        return course.fbuser_set.all()
+
+    def create_new_user(user_info,user_id):
         pprint("Creating new user")
         firstname = user_info['first_name']
         lastname = user_info['last_name']

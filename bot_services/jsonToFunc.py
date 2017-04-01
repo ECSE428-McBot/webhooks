@@ -142,11 +142,21 @@ def sonToFunc(inSon, message):
         # return macBus()
 
     elif apiAction == "broadcast":
-        if "class" in inSon.keys() and "message" in inSon.keys():
-            return ["broadcast", inSon["class"], inSon["message"]]
-            # return broadcast(inSon["class"],inSon["message"])
-        else:
-            return "Error: Incomplete Input"
+        if "class" not in parameters.keys():
+            return "I can't resolve the class name"
+        if "message" not in parameters.keys():
+            return "I can't resolve the message you want to broadcast"
+        #check if user is instructor
+        user_id = (message['sender']['id'])
+        fbuser = UserService.getUser(user_id)
+        if not (fbuser.user_type == 'instructor'):
+            return "Sorry, only instructors can broadcast message"
+        try:
+            students_in_class = UserService.getStudentsInCourse(parameters['class'])
+        except:
+            return "I'm unable to find student taking this class. I don't think this class exist"
+        CommunicationService.post_facebook_message_to_class(students_in_class, parameters['message'])
+        return "your message is successfully broadcasted to the class " + parameters['class']
 
     elif apiAction == "msgAll":
         if "message" not in parameters.keys():

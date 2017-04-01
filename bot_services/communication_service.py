@@ -8,7 +8,7 @@ import facebook
 # Permanent page access token
 # TODO change access token to production one before pushing.
 PAGE_ACCESS_TOKEN = 'EAAFJaTQTZCAgBAKquTNCRxUz2edEmSuocZC9EreThZAiGFImZAHGGqVlcLdvRDe3vMNXZBvXnQL3ZC0VMJY8IMAWt6t0j8tZCBwsYBZAQDEYOh1kwdjzmnu6zkg1tPyWITWTtgcQvZAw0mvyqZAIkZABmmkMQr1UQwBCkKkcXCTmaZAFHAZDZD'
-#PAGE_ACCESS_TOKEN = 'EAAfmEq7c1t8BALNGeSjYWqfOhEXL9XDIsZAtPoZCWIaqluXPsYakGxZCzbtVDUYpg6HZCLZBIm5GtQaPw3ssjR4uzh0EwSgMvsseyVzyyTDjScjM7W0MxK4apWVFCuJyift6WEk0bx0DMr3cZCWRzHiPdgoFmeR6NnZA6bgKpMerwZDZD'
+# PAGE_ACCESS_TOKEN = 'EAAVTNRkgcFgBAAj8hRodXNlJ5Lf27hqRLUyyZBfrPLyBx9Edp91MRGzHaZCUUw34hpZCAV4hCAwwZAEKtzpFh7f8X53h6JnDzTFZAQbY00ohzs5RD9fFoZA2XCPhxFxZAYimeQonAUpcd1wkOK8HkdcGZCoeFVqc7T3JzcnYGBVeLgZDZD'
 graph = facebook.GraphAPI(PAGE_ACCESS_TOKEN, version='2.2')
 
 class CommunicationService:
@@ -25,8 +25,12 @@ class CommunicationService:
         pprint(status.json())
 
     def post_facebook_message_to_all(received_message):
-            for user in UserService.getAllUsers():
-                CommunicationService.post_facebook_message(user.user_id,received_message)
+        for user in UserService.getAllUsers():
+            CommunicationService.post_facebook_message(user.user_id,received_message)
+
+    def post_facebook_message_to_class(students_in_class, received_message):
+        for user in students_in_class:
+            CommunicationService.post_facebook_message(user.user_id,received_message)
 
     def get_event_info(event_id):
         event = requests.get(("https://graph.facebook.com/v2.6/%s/?fields=category%%2Cname%%2Cend_time&access_token=%s" % (event_id, PAGE_ACCESS_TOKEN)))
