@@ -3,9 +3,7 @@ from fb_mcbot.models import FBUser, Conversation, StudentSociety, Admin, Major, 
 
 
 class Question:
-    question_type = {'NOTHING': 0, 'USER_TYPE': 1, 'AUTHENTICATE': 2, 'EVENT_NAME': 3,
-                     'EVENT_LOCATION': 4, 'EVENT_DESCRIPTION': 5, 'EVENT_LINK': 6, 'EVENT_DATE': 7,
-                     'EVENT_CONFIRMATION': 8, 'CHANGE_STATUS': 9}
+    question_type = {'NOTHING': 0, 'USER_TYPE': 1, 'AUTHENTICATE': 2, 'CHANGE_STATUS': 9, 'EVENT_TYPES':10}
 
     def get_question_type(question):
         try:
