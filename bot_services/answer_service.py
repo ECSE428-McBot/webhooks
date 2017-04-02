@@ -76,13 +76,13 @@ class AnswerService:
 
         # if the question is changing the user type. verify the user enter a different type
         elif(conversation.question == Question.get_question_type(QUESTION_CHANGE_STATUS)):
+            conversation.set_conversation_question(Question.get_question_type(QUESTION_NOTHING))
             current_type = fbuser.user_type
             fbuser_type = AnswerService.getUsertype(msg)
             if(fbuser_type is None):
-                return MSG_ASK_FOR_USER_TYPE
+                return "Sorry, the user type " + msg + " does not exist"
             elif(fbuser_type != current_type):
                 fbuser.set_user_type(fbuser_type)
-                conversation.set_conversation_question(Question.get_question_type(QUESTION_NOTHING))
                 return "Your new status is: " + fbuser_type + "."
             else:
                 return "You already are " + fbuser_type + ", no changes were made."
