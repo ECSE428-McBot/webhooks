@@ -86,6 +86,7 @@ class MacBusService:
         if user.user_type == 'student':
             currentDate = MacBusService.getCurrentDate()
             currentTime = MacBusService.getCurrentTime()
-            return "Downtown: " + MacBusService.locateDate(True, currentDate, currentTime) + ", Macdonald: " + MacBusService.locateDate(False, currentDate, currentTime)
+
+            return "Right now is " + currentTime.strftime("%H:%M") + ". Downtown: " + MacBusService.locateDate(True, currentDate, currentTime) + ", Macdonald: " + MacBusService.locateDate(False, currentDate, currentTime)
         else:
             return "This service is not open due to your user type."  # user type error
