@@ -79,7 +79,8 @@ class AnswerService:
             current_type = fbuser.user_type
             fbuser_type = AnswerService.getUsertype(msg)
             if(fbuser_type is None):
-                return MSG_ASK_FOR_USER_TYPE
+                conversation.set_conversation_question(Question.get_question_type(QUESTION_NOTHING))
+                return "Sorry, the user type " + msg " does not exist"
             elif(fbuser_type != current_type):
                 fbuser.set_user_type(fbuser_type)
                 conversation.set_conversation_question(Question.get_question_type(QUESTION_NOTHING))
