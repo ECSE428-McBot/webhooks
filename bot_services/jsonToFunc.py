@@ -128,11 +128,21 @@ def sonToFunc(inSon, message):
             return str(e)
         EventService.add_types_to_event(event_types, event)
         return "the types are added to the event"
-    
+
     elif apiAction == "search_event":
+        user_id = (message['sender']['id'])
+        fbuser = UserService.getUser(user_id)
+        if not (fbuser.user_type == 'student'):
+            return "This service is not open due to your user type."
         if 'type' in parameters.keys():
-            events = EventService.search_event_by_type(parameters['type'])
-            return "Events of type " + parameters['type'] + ": " + [event.link for event in events].join(", ")
+            try:
+                events = EventService.search_event_by_type(parameters['type'])
+                if (len(events) == 0):
+                    return "There is no event of type " + parameters['type']
+                return "Events of type " + parameters['type'] + ": \n" + "\n\n".join(str(event.name + "\n" + event.link) for event in events)
+            except Exception as e:
+                return str(e)
+        return "What's the type that you want to search?"
 
     # If user enters "change" we start the "change my user type" conversation
     elif apiAction == "changeStatus":
