@@ -76,7 +76,10 @@ class EventService:
         return recent_event
 
     def search_event_by_type(type_name):
-        event_type = EventType.objects.get(name=type_name)
+        try:
+            event_type = EventType.objects.get(name=type_name)
+        except EventType.DoesNotExist:
+            raise Exception(type_name + ' is not a valid event type')
         return event_type.event_set.all()
 
     def initEvent(conversation, link):
