@@ -36,16 +36,11 @@ class MacBusService:
     summerMS = [time(hour=7, minute=30), time(hour=18, minute=30)]
 
     @staticmethod
-    def getCurrentTime():
-        return datetime.now().time() + timedelta(hours=-4)  # UTC timezone
-
-    @staticmethod
-    def getCurrentDate():
+    def getCurrentDateTime():
         # UTC timezone
-        if datetime.now().time() < time(hour=4, minute=0):
-            return datetime.now().date() + timedelta(days=-1)
-        else:
-            return datetime.now().date()
+        currentDateTime = datetime.now()
+        currentDateTime = currentDateTime + timedelta(hours=-4)
+        return [currentDateTime.date(), currentDateTime.time()]
 
     @staticmethod
     def searchSchedule(currentTime, schedule):
@@ -88,9 +83,8 @@ class MacBusService:
     def giveNextBus(user):
         # Verify user type.
         if user.user_type == 'student':
-            currentDate = MacBusService.getCurrentDate()
-            currentTime = MacBusService.getCurrentTime()
-
+            currentDate = MacBusService.getCurrentDateTime()[0]
+            currentTime = MacBusService.getCurrentDateTime()[1]
             return "Right now is " + currentTime.strftime("%H:%M") + ". Downtown: " + MacBusService.locateDate(True, currentDate, currentTime) + ", Macdonald: " + MacBusService.locateDate(False, currentDate, currentTime)
         else:
             return "This service is not open due to your user type."  # user type error
