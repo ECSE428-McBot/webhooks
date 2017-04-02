@@ -37,11 +37,15 @@ class MacBusService:
 
     @staticmethod
     def getCurrentTime():
-        return datetime.now().time()
+        return datetime.now().time() + timedelta(hours=-4)  # UTC timezone
 
     @staticmethod
     def getCurrentDate():
-        return datetime.now().date()
+        # UTC timezone
+        if datetime.now().time() < time(hour=4, minute=0):
+            return datetime.now().date() + timedelta(days=-1)
+        else:
+            return datetime.now().date()
 
     @staticmethod
     def searchSchedule(currentTime, schedule):
