@@ -2,7 +2,7 @@ import json
 
 class ExamDateService:
 
-    posted = True
+    #posted = True
 
     # Organize raw to usage data.
     # CAUTION: This will overwrite the original "ExamDate.txt".
@@ -97,7 +97,7 @@ class ExamDateService:
                 output = output[:-1]  # Remove the last comma.
 
                 if output == "":
-                    output = "This course does not have a listed final exam."
+                    output = " This course does not have a listed final exam."
 
                 return str(subjectID) + str(courseNum) + ":" + output
             except:
@@ -106,19 +106,26 @@ class ExamDateService:
             return examDates  # "error - no such file" message
 
     @staticmethod
+    def posted(user):
+        if user.code == "AAAAAA":
+            return False
+        else:
+            return True
+
+    @staticmethod
     def giveExamDates(user):
         # Verify user type.
         if user.user_type == 'student':
 
             # Check if the dates are posted.
-            if ExamDateService.posted is True:
+            if ExamDateService.posted(user) is True:
 
-                if user.courses is not None:
+                if str(user.courses.all()) != "<QuerySet []>":
 
                     output = ""
 
                     for course in user.courses.all():
-                        subjectID = course.name[:4]
+                        subjectID = course.name[:4].upper()
                         courseNum = course.name[-3:]
                         output = output + str(ExamDateService.searchExamDate(subjectID, courseNum)) + " "
 
