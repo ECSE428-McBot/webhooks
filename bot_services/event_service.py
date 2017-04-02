@@ -75,6 +75,10 @@ class EventService:
         recent_event = Event.objects.filter(creator = ssociety).latest('creation_time')
         return recent_event
 
+    def search_event_by_type(types):
+        return Event.objects.filter(types__name=types)
+
+
     def initEvent(conversation, link):
         try:
             EventService.create_new_event(conversation, link)

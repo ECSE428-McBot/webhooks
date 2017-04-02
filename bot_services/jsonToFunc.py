@@ -128,6 +128,11 @@ def sonToFunc(inSon, message):
             return str(e)
         EventService.add_types_to_event(event_types, event)
         return "the types are added to the event"
+    
+    elif apiAction == "search_event":
+        if 'type' in parameters.keys():
+            events = EventService.search_event_by_type(parameters['type'])
+            return "Events of type " + parameters['type'] + ": " + [event.link for event in events].join(", ")
 
     # If user enters "change" we start the "change my user type" conversation
     elif apiAction == "changeStatus":
