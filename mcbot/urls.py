@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^fb_mcbot/', include('fb_mcbot.urls')),
 ]
 
-# def one_time_startup():
-# 	Event.objects.filter(event_time__lt=datetime.now()).delete()
-#
-# one_time_startup()
+def one_time_startup():
+	Event.objects.filter(event_time__lt=datetime.now()).delete()
+
+one_time_startup()
